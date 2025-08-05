@@ -1,0 +1,81 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-CA'
+title = 'Francis Beauchamp'
+theme = 'typo'
+
+[taxonomies]
+tag = 'tags'
+
+[params]
+# Meta description
+description = "A Tech Blog"
+
+# Appearance settings
+theme = 'auto'
+colorPalette = 'catpuccin'
+hideHeader = false
+
+# Intro on main page, content is markdown
+homeIntroTitle = 'Hi!'
+homeIntroContent = """
+I'm a french canadian software engineer with a mixed background of mobile development, academic research and design.
+My current interests are all over the place and include algorithms, computer graphics, video games development, all things mobile and statistics.
+"""
+
+# Collection to display on home
+homeCollectionTitle = 'Projects'
+homeCollection = 'projects'
+
+# Lists parameters
+paginationSize = 100
+listSummaries = true
+listDateFormat = '2 Jan 2006'
+
+# Breadcrumbs
+[params.breadcrumbs]
+enabled = true
+showCurrentPage = true
+home = "Home"
+
+# Social icons
+[[params.social]]
+name = "gmail"
+url = "mailto:francis.beauchampsc@gmail.com"
+
+[[params.social]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/francisbeauchamp/"
+
+[[params.social]]
+name = "github"
+url = "https://github.com/Prismik"
+
+# Main menu pages
+[[params.menu]]
+name = "home"
+url = "/"
+
+[[params.menu]]
+name = "projects"
+url = "/projects"
+
+[[params.menu]]
+name = "about"
+url = "/about"
+
+# Syntax highlight on code blocks
+[markup]
+[markup.highlight]
+style = 'xcode'
+
+# Giscus comments
+[params.giscus]
+enable = false
+repo = "user/repo"
+repoid = "repoId"
+category = "General"
+categoryid = "categoryId"
+mapping = "pathname"
+theme = "preferred_color_scheme"
+
+

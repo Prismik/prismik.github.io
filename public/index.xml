@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on Francis Beauchamp</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content in Home on Francis Beauchamp</description>
+    <generator>Hugo</generator>
+    <language>en-CA</language>
+    <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slash</title>
+      <link>http://localhost:1313/projects/slash/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/slash/</guid>
+      <description>&lt;p&gt;Hack and slash game made with Unreal Engine 5.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>SwiftTracer - A physically based rendering engine</title>
+      <link>http://localhost:1313/projects/swifttracer/</link>
+      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/swifttracer/</guid>
+      <description>&lt;p&gt;Swift implementation of a physically based rendering engine that is inspired by PBRT, Mitsuba and many other contributors in the field.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;h2 class=&#34;heading&#34; id=&#34;research-experience&#34;&gt;&#xA;  Research experience&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#research-experience&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;h3 class=&#34;heading&#34; id=&#34;langevin-monte-carlo-with-finite-difference&#34;&gt;&#xA;  Langevin monte carlo with finite difference&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#langevin-monte-carlo-with-finite-difference&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th style=&#34;text-align: left&#34;&gt;École de technologie supérieure&lt;/th&gt;&#xA;          &lt;th style=&#34;text-align: right&#34;&gt;&lt;em&gt;2023 - December 2025&lt;/em&gt;&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;Relevant skills&lt;/strong&gt;&lt;/td&gt;&#xA;          &lt;td style=&#34;text-align: right&#34;&gt;Swift, Rust, C++, C&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;p&gt;This project led by Adrien Gruson studies the problems related to anisotropic interactions in the domain of ray-traced rendering and proposes to use finite diﬀerences to evaluate the image gradient, giving rise to Gradient Domain MALA (GDMALA). Unlike other approaches, our method supports anisotropic mutations without resorting to an auto&#xA;diﬀerentiation system.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
