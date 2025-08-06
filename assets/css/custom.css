@@ -1,4 +1,4 @@
-table {
+.resume-table {
     margin-top: 0px;
     margin-left: 0px;
     margin-right: 0px;
@@ -6,12 +6,16 @@ table {
     width: 100%;
 }
 
-thead {
+.resume-table thead {
     width: 100%;
     display: table;
 }
 
-tbody {
+.resume-table tbody {
     width: 100%;
     display: table;
+}
+
+pre {
+    background-color: #282a36 !important;
 }

@@ -28,7 +28,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:1313/apple-touch-icon.png">
 
 <link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Francis Beauchamp">
-<meta name="description" content="A Tech Blog"/>
+<meta name="description" content="Francis Beauchamp personal website"/>
 
 
 
@@ -43,7 +43,7 @@
 <meta property="og:url" content="http://localhost:1313/">
   <meta property="og:site_name" content="Francis Beauchamp">
   <meta property="og:title" content="Home">
-  <meta property="og:description" content="A Tech Blog">
+  <meta property="og:description" content="Francis Beauchamp personal website">
   <meta property="og:locale" content="en_CA">
   <meta property="og:type" content="website">
 
@@ -58,7 +58,7 @@
 
 
 
-<link rel="stylesheet" href="/assets/combined.min.86f24637fd6d7d6073260ce27239523d99c226783b18a111e33ae97bec079368.css" media="all">
+<link rel="stylesheet" href="/assets/combined.min.8beed8d54dde0701365f53667913f01ddfc46677839a605e04b7b284b053087b.css" media="all">
 
 
 
@@ -83,7 +83,7 @@
 
 
 
-<body class="auto">
+<body class="light">
 
   <div class="content">
     <header>
@@ -233,7 +233,7 @@ My current interests are all over the place and include algorithms, computer gra
         </p>
 
         
-        <p class="line-summary"> <p>Swift implementation of a physically based rendering engine that is inspired by PBRT, Mitsuba and many other contributors in the field.</p> </p>
+        <p class="line-summary"> <p>SwiftTracer is an implementation of a physically based rendering engine that is inspired by PBRT, Mitsuba and many other contributors in the field. At it&rsquo;s core, it uses <a href="https://developer.apple.com/documentation/accelerate/simd-library">simd</a> to perform the ray tracing computations: mostly vectors and matrices operations along with some trigonometry. The tracing is done in parallel, thanks to the new <code>async/await</code> <a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/">concurrency model</a> introduced in Swift 5.5. We split our target image in a series of blocks, all of which run a self-contained tracing task. The collision detection is done using a combination of shape intersections, AABBs and even acceleration techniques like BVH. Several image formats like png, jpg, pfm and exr are supported.</p> </p>
         
     </div>
 </div>

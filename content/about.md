@@ -11,7 +11,8 @@ hidePagination: true
 ### Langevin monte carlo with finite difference
 | École de technologie supérieure | *2023 - December 2025* |
 | :- | -: |
-|  **Relevant skills** | Swift, Rust, C++, C | 
+|  **Relevant skills** | Swift, Rust, C++, C |
+{.resume-table}
 
 This project led by Adrien Gruson studies the problems related to anisotropic interactions in the domain of ray-traced rendering and proposes to use finite diﬀerences to evaluate the image gradient, giving rise to Gradient Domain MALA (GDMALA). Unlike other approaches, our method supports anisotropic mutations without resorting to an auto
 diﬀerentiation system.
@@ -29,6 +30,7 @@ diﬀerentiation system.
 | Uber | *January 2022 - December 2022* |
 | :- | -: |
 |  **Relevant skills** | Swift, Go, Java, Objective-C | 
+{.resume-table}
 
 **Responsibilities**
 * Maintain and develop features for the On-Trip module in the RIB based Uber app.
@@ -40,6 +42,7 @@ diﬀerentiation system.
 | Shopify | *February 2020 - January 2022* |
 | :- | -: |
 |  **Relevant skills** | Swift, Kotlin, TypeScript, Ruby | 
+{.resume-table}
 
 **Responsibilities**
 * Drive intra-team meetings that fostered knowledge sharing in our respective spheres of expertise.
@@ -53,6 +56,7 @@ diﬀerentiation system.
 | Greencopper | *January 2019 - January 2020* |
 | :- | -: |
 |  **Relevant skills** | Swift, Python, Kotlin, Objective-C, Java, Unity | 
+{.resume-table}
 
 **Responsibilities**
 * Develop a payment system for credit card and Apple Pay by using the Square SDK.
@@ -64,6 +68,7 @@ diﬀerentiation system.
 | Lyrebird | *September 2018 - January 2019* |
 | :- | -: |
 |  **Relevant skills** | Swift, Go, Graphics design | 
+{.resume-table}
 
 **Responsibilities**
 * Use iOS functionalities of speech-to-text, text-to-speech, recordings and audio playback for a mobile application.
@@ -75,6 +80,7 @@ diﬀerentiation system.
 | Nurun | *February 2018 - May 2018* |
 | :- | -: |
 |  **Relevant skills** | Swift, Objective-C, Java | 
+{.resume-table}
 
 **Responsibilities**
 * Design, analyze and develop the integration of Amazon DRS into our smart home appliance mobile app.
@@ -85,6 +91,7 @@ diﬀerentiation system.
 | Mirego | *May 2017 - February 2018* |
 | :- | -: |
 |  **Relevant skills** | Swift, Objective-C, Java | 
+{.resume-table}
 
 **Responsibilities**
 * Incorporate new article templates into a mobile content publishing application developed in Swift.
@@ -95,6 +102,7 @@ diﬀerentiation system.
 | Ubisoft | *May 2016 - August 2016* |
 | :- | -: |
 |  **Relevant skills** | TypeScript, Node.js, Python, Html | 
+{.resume-table}
 
 **Responsibilities**
 * Remove obsolete functionalities in a micro-service architecture to improve maintainability.
@@ -105,6 +113,7 @@ diﬀerentiation system.
 | Nurun | *May 2015 - August 2015* |
 | :- | -: |
 |  **Relevant skills** | Swift, Ruby | 
+{.resume-table}
 
 **Responsibilities**
 * Develop a system evaluating the accessibility of smart home appliances from a mobile device.
@@ -116,6 +125,7 @@ diﬀerentiation system.
 | Seevibes | *January 2014 - September 2014* |
 | :- | -: |
 |  **Relevant skills** | JavaScript, Ruby, Html | 
+{.resume-table}
 
 **Responsibilities**
 * Improve the UX of a web application by creating a new design for a dashboard.
@@ -132,3 +142,4 @@ diﬀerentiation system.
 | **B.Eng. in software engineering**| École de technologie supérieure | Autumn 2013 - April 2017 |
 | *Saint-Jean-sur-Richelieu, QC* | | |
 | **D.E.C. in computer informatics** | Cégep Saint-Jean-sur-Richelieu | Autumn 2010 - May 2013 |
+{.resume-table}

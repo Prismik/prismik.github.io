@@ -8,10 +8,10 @@ tag = 'tags'
 
 [params]
 # Meta description
-description = "A Tech Blog"
+description = "Francis Beauchamp personal website"
 
 # Appearance settings
-theme = 'auto'
+theme = 'light'
 colorPalette = 'catpuccin'
 hideHeader = false
 
@@ -65,8 +65,17 @@ url = "/about"
 
 # Syntax highlight on code blocks
 [markup]
-[markup.highlight]
-style = 'xcode'
+    [markup.highlight]
+    style = 'base16-snazzy'
+    [markup.goldmark]
+        [markup.goldmark.parser.attribute]
+        block = true # default is false
+        [markup.goldmark.extensions]
+            [markup.goldmark.extensions.passthrough]
+            enable = true
+            [markup.goldmark.extensions.passthrough.delimiters]
+            block = [['\[', '\]'], ['$$', '$$']]
+            inline = [['\(', '\)']]
 
 # Giscus comments
 [params.giscus]
@@ -78,4 +87,6 @@ categoryid = "categoryId"
 mapping = "pathname"
 theme = "preferred_color_scheme"
 
-
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
