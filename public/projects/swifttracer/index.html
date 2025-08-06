@@ -166,7 +166,7 @@
     
     <div class="single-content">
       <p>SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&rsquo;s degree.</p>
-<p>But what does &ldquo;physically based&rdquo; even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the <a href="(https://doi.org/10.1145/15886.15902)">rendering equation</a> which allows us to do just that by implementing techniques such as Monte-Carlo integration. By accumulating several light paths generated randomly, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.</p>
+<p>But what does &ldquo;physically based&rdquo; even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the <a href="(https://doi.org/10.1145/15886.15902)">rendering equation</a> which allows us to do just that with the help of techniques such as Monte-Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.</p>
 <h2 class="heading" id="mathematical-operations">
   Mathematical operations
   <a class="anchor" href="#mathematical-operations">#</a>
@@ -186,8 +186,8 @@
 
 <figure class="">
 
-    <div class="img-container" style="--w: 2552; --h: 822;">
-        <img loading="lazy" alt="simd" src="/projects/swifttracer/images/simd.png" width="2552" height="822">
+    <div class="img-container" style="--w: 2552; --h: 844;">
+        <img loading="lazy" alt="simd" src="/projects/swifttracer/images/simd.png" width="2552" height="844">
     </div>
 
     
@@ -197,12 +197,11 @@
   Parellel processing
   <a class="anchor" href="#parellel-processing">#</a>
 </h2>
-<p>Rendering a full scene can take a lot of time. To speed up the process, SwiftTracer does the tracing in parallel, thanks to the new <code>async/await</code> <a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/">concurrency model</a> introduced in Swift 5.5. We split our target image in a series of blocks, which run their own self-contained tracing task. First, we must decide on a block size and make an <code>assemble</code> function that will bring them back together as one image.</p>
+<p>Rendering a full scene can take a lot of time. To speed up the process, SwiftTracer does as much of it as it can in parallel, thanks to the new <code>async/await</code> <a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/">concurrency model</a> introduced in Swift 5.5. We split our target image in a series of blocks, which run their own self-contained tracing task. First, we must decide on a block size and make an <code>assemble</code> function that will bring them back together as one image.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">render</span>(scene: Scene) -&gt; PixelBuffer {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">image</span> = PixelBuffer(
-</span></span><span style="display:flex;"><span>        width: scene.camera.res.x, 
-</span></span><span style="display:flex;"><span>        height: scene.camera.res.y, 
-</span></span><span style="display:flex;"><span>        value: .zero
+</span></span><span style="display:flex;"><span>        width: scene.camera.res.x,
+</span></span><span style="display:flex;"><span>        height: scene.camera.res.y,
 </span></span><span style="display:flex;"><span>    )
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">gcd</span> = DispatchGroup()
 </span></span><span style="display:flex;"><span>    gcd.enter()
@@ -213,6 +212,23 @@
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    gcd.wait()
 </span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">return</span> image
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff5c57">extension</span> <span style="color:#f3f99d">Block</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">func</span> <span style="color:#57c7ff">assemble</span>(into image: PixelBuffer) -&gt; PixelBuffer {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">for</span> block <span style="color:#ff6ac1">in</span> <span style="color:#ff6ac1">self</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff6ac1">for</span> x <span style="color:#ff6ac1">in</span> (<span style="color:#ff9f43">0</span> ..<span style="color:#ff6ac1">&lt;</span> block.size.x) {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff6ac1">for</span> y <span style="color:#ff6ac1">in</span> (<span style="color:#ff9f43">0</span> ..<span style="color:#ff6ac1">&lt;</span> block.size.y) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff5c57">let</span> (dx, dy): (<span style="color:#ff5c57">Int</span>, <span style="color:#ff5c57">Int</span>) = (
+</span></span><span style="display:flex;"><span>                        x <span style="color:#ff6ac1">+</span> block.position.x,
+</span></span><span style="display:flex;"><span>                        y <span style="color:#ff6ac1">+</span> block.position.y
+</span></span><span style="display:flex;"><span>                    )
+</span></span><span style="display:flex;"><span>                    image[dx, dy] = block.image[x, y]
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">return</span> image
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Then we create a task for each of the block and start their integration process where the ray tracing happens. Depending on the chosen resolution and block <code>size</code>, we will spawn a varying number of rendering processes to run on their own core. The <code>await</code> keyword on line 2 tells us to wait the task to be completed before returning, and the one on line 17 to wait for all of the blocks to have finished their rendering.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">blocks</span>(size: <span style="color:#ff5c57">Int</span>, res: Vec2) async -&gt; [Block] {
@@ -237,11 +253,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>}
 </span></span></code></pre></div><p>Finally, we can implement our own integration methods. The most simple version of that is a Monte-Carlo estimation that computes the luminance $L$ with a unidirectional path tracing algorithm. For each pixel $(x, y)$ in the block, we will cast $n$ rays of light and average their total contributions by the number of samples $n$.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">integrate</span>(size: Vec2, p: Vec2, samples n: <span style="color:#ff5c57">Int</span> = <span style="color:#ff9f43">5</span>) -&gt; Block {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">img</span> = PixelBuffer(
-</span></span><span style="display:flex;"><span>        width: size.x, 
-</span></span><span style="display:flex;"><span>        height: size.y, 
-</span></span><span style="display:flex;"><span>        value: .zero
-</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">img</span> = PixelBuffer(width: size.x, height: size.y)
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">var</span> <span style="color:#ff5c57">block</span> = Block(position: Vec2(x, y), size: size, image: img)
 </span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">for</span> lx <span style="color:#ff6ac1">in</span> <span style="color:#ff9f43">0</span> ..<span style="color:#ff6ac1">&lt;</span> block.size.x {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">for</span> ly <span style="color:#ff6ac1">in</span> <span style="color:#ff9f43">0</span> ..<span style="color:#ff6ac1">&lt;</span> block.size.y {
@@ -256,7 +268,7 @@
 </span></span><span style="display:flex;"><span>            img[lx, ly] = avg <span style="color:#ff6ac1">/</span> <span style="color:#ff5c57">Float</span>(n)
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    block.image = img <span style="color:#78787e">// Assign the resulting image</span>
+</span></span><span style="display:flex;"><span>    block.image = img
 </span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">return</span> block
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The collision detection is done using a combination of shape intersections, AABBs and even acceleration techniques like BVH. Several image formats like png, jpg, pfm and exr are supported.</p>
@@ -279,8 +291,8 @@
 
 <figure class="">
 
-    <div class="img-container" style="--w: 1992; --h: 367;">
-        <img loading="lazy" alt="light-scattering" src="/projects/swifttracer/images/scattering.png" width="1992" height="367">
+    <div class="img-container" style="--w: 1996; --h: 503;">
+        <img loading="lazy" alt="light-scattering" src="/projects/swifttracer/images/scattering.png" width="1996" height="503">
     </div>
 
     
@@ -433,8 +445,8 @@
 
 <figure class="">
 
-    <div class="img-container" style="--w: 2068; --h: 944;">
-        <img loading="lazy" alt="SwiftWavefrontApi" src="/projects/swifttracer/images/swiftwavefront.png" width="2068" height="944">
+    <div class="img-container" style="--w: 2068; --h: 962;">
+        <img loading="lazy" alt="SwiftWavefrontApi" src="/projects/swifttracer/images/swiftwavefront.png" width="2068" height="962">
     </div>
 
     
@@ -454,7 +466,7 @@
   <a class="anchor" href="#loading-generic-objects">#</a>
 </h2>
 <p>The loading of my scenes rely heavily on the <code>Codable</code> protocol which has been natively available for a while, as well as a system of generic <code>Any</code> boxed types that can be converted to their concrete implementation. You can feed a json to SwiftTracer and it will gracefully do the conversion from the boxed type to the concrete implementations.</p>
-<p>To illustrate that process, imagine you have a generic type you want to decode like <code>Material</code>. It has several implementations which all require different properties to be decoded. We start with <code>AnyMaterial</code>, a box type definition that encapsulates the types it wants to decode and a generic wrapped entity. It also has some high level coding keys shared by all of the <code>Material</code> implementations.</p>
+<p>To illustrate that process, imagine you have a generic type you want to decode like <code>Material</code>. It has several implementations which all require different properties to be decoded. We start with <code>AnyMaterial</code>, a box type definition that encapsulates the types it wants to decode and a generic <code>wrapped</code> entity. It also has some high level coding keys shared by all of the <code>Material</code> implementations.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">struct</span> <span style="color:#f3f99d">AnyMaterial</span>: Decodable {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">enum</span> <span style="color:#f3f99d">TypeIdentifier</span>: <span style="color:#ff5c57">String</span>, Decodable {
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">case</span> diffuse

@@ -9,7 +9,7 @@ title = 'SwiftTracer - A physically based rendering engine'
 SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master's degree.
 
 <!--more-->
-But what does "physically based" even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the [rendering equation]((https://doi.org/10.1145/15886.15902)) which allows us to do just that by implementing techniques such as Monte-Carlo integration. By accumulating several light paths generated randomly, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.
+But what does "physically based" even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the [rendering equation]((https://doi.org/10.1145/15886.15902)) which allows us to do just that with the help of techniques such as Monte-Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.
 
 ## Mathematical operations
 
@@ -19,14 +19,13 @@ At it's core, SwiftTracer uses [simd](https://developer.apple.com/documentation/
 
 ## Parellel processing
 
-Rendering a full scene can take a lot of time. To speed up the process, SwiftTracer does the tracing in parallel, thanks to the new `async/await` [concurrency model](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/) introduced in Swift 5.5. We split our target image in a series of blocks, which run their own self-contained tracing task. First, we must decide on a block size and make an `assemble` function that will bring them back together as one image.
+Rendering a full scene can take a lot of time. To speed up the process, SwiftTracer does as much of it as it can in parallel, thanks to the new `async/await` [concurrency model](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/) introduced in Swift 5.5. We split our target image in a series of blocks, which run their own self-contained tracing task. First, we must decide on a block size and make an `assemble` function that will bring them back together as one image.
 
 ```swift
 func render(scene: Scene) -> PixelBuffer {
     let image = PixelBuffer(
-        width: scene.camera.res.x, 
-        height: scene.camera.res.y, 
-        value: .zero
+        width: scene.camera.res.x,
+        height: scene.camera.res.y,
     )
     let gcd = DispatchGroup()
     gcd.enter()
@@ -37,6 +36,23 @@ func render(scene: Scene) -> PixelBuffer {
     }
     gcd.wait()
     return image
+}
+
+extension Block {
+    func assemble(into image: PixelBuffer) -> PixelBuffer {
+        for block in self {
+            for x in (0 ..< block.size.x) {
+                for y in (0 ..< block.size.y) {
+                    let (dx, dy): (Int, Int) = (
+                        x + block.position.x,
+                        y + block.position.y
+                    )
+                    image[dx, dy] = block.image[x, y]
+                }
+            }
+        }
+        return image
+    }
 }
 ```
 
@@ -69,11 +85,7 @@ Finally, we can implement our own integration methods. The most simple version o
 
 ```swift
 func integrate(size: Vec2, p: Vec2, samples n: Int = 5) -> Block {
-    let img = PixelBuffer(
-        width: size.x, 
-        height: size.y, 
-        value: .zero
-    )
+    let img = PixelBuffer(width: size.x, height: size.y)
     var block = Block(position: Vec2(x, y), size: size, image: img)
     for lx in 0 ..< block.size.x {
         for ly in 0 ..< block.size.y {
@@ -88,7 +100,7 @@ func integrate(size: Vec2, p: Vec2, samples n: Int = 5) -> Block {
             img[lx, ly] = avg / Float(n)
         }
     }
-    block.image = img // Assign the resulting image
+    block.image = img
     return block
 }
 ```
@@ -135,7 +147,7 @@ Triangle intersection uses the [Möller–Trumbore ray-triangle intersection alg
 
 The loading of my scenes rely heavily on the `Codable` protocol which has been natively available for a while, as well as a system of generic `Any` boxed types that can be converted to their concrete implementation. You can feed a json to SwiftTracer and it will gracefully do the conversion from the boxed type to the concrete implementations.
 
-To illustrate that process, imagine you have a generic type you want to decode like `Material`. It has several implementations which all require different properties to be decoded. We start with `AnyMaterial`, a box type definition that encapsulates the types it wants to decode and a generic wrapped entity. It also has some high level coding keys shared by all of the `Material` implementations.
+To illustrate that process, imagine you have a generic type you want to decode like `Material`. It has several implementations which all require different properties to be decoded. We start with `AnyMaterial`, a box type definition that encapsulates the types it wants to decode and a generic `wrapped` entity. It also has some high level coding keys shared by all of the `Material` implementations.
 
 ```swift
 struct AnyMaterial: Decodable {
