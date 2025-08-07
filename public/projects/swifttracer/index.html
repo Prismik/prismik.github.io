@@ -41,7 +41,7 @@
 <meta property="og:url" content="http://localhost:1313/projects/swifttracer/">
   <meta property="og:site_name" content="Francis Beauchamp">
   <meta property="og:title" content="SwiftTracer - A physically based rendering engine">
-  <meta property="og:description" content="SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master’s degree.">
+  <meta property="og:description" content="SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master’s degree. The engine currently support several image formats like png, jpg, pfm and exr. See for yourself on github.">
   <meta property="og:locale" content="en_CA">
   <meta property="og:type" content="article">
     <meta property="article:section" content="projects">
@@ -165,13 +165,13 @@
     </header>
     
     <div class="single-content">
-      <p>SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&rsquo;s degree.</p>
-<p>But what does &ldquo;physically based&rdquo; even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the <a href="(https://doi.org/10.1145/15886.15902)">rendering equation</a> which allows us to do just that with the help of techniques such as Monte-Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.</p>
+      <p>SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&rsquo;s degree. The engine currently support several image formats like <code>png</code>, <code>jpg</code>, <code>pfm</code> and <code>exr</code>. See for yourself on <a href="https://github.com/Prismik/SwiftTracer">github</a>.</p>
+<p>But what does &ldquo;physically based&rdquo; even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the <a href="https://doi.org/10.1145/15886.15902">rendering equation</a> which allows us to do just that with the help of techniques such as Monte-Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.</p>
 <h2 class="heading" id="mathematical-operations">
   Mathematical operations
   <a class="anchor" href="#mathematical-operations">#</a>
 </h2>
-<p>At it&rsquo;s core, SwiftTracer uses <a href="https://developer.apple.com/documentation/accelerate/simd-library">simd</a> to perform the mathematical computations: mostly vectors and matrices operations along with some trigonometry. Why does this matter? Because it turns out that ray tracing requires a lot of vector operations, both for image handling and the actual tracing. Imagine you want to sum the contributions of many images to get their average, or say, scale all of their values by a scalar. We would normally make such operations for each pixels. But since simd handles multiple data with a single instruction, it&rsquo;s a perfect fit for this kind of problem. We can store an image as a vector of scalars, and use a single instruction to apply transformation.</p>
+<p>At it&rsquo;s core, SwiftTracer uses <a href="https://developer.apple.com/documentation/accelerate/simd-library">simd</a> to perform the mathematical computations: mostly vectors and matrices operations along with some trigonometry. Why does this matter? Because it turns out that ray tracing requires a lot of vector operations, both for image handling and the actual tracing. Imagine you want to sum the contributions of many images to get their average, or say, scale all of their values by a scalar. We would normally make such operations for each pixels. But since simd handles multiple data with a single instruction, it&rsquo;s a perfect fit for this kind of problem. We can store an image as a vector of scalars, and use a single instruction to apply transformation on each of it&rsquo;s elements.</p>
 <p>
 
 
@@ -193,7 +193,35 @@
     
 </figure>
 </p>
-<h2 class="heading" id="parellel-processing">
+<p>While this is good enough for large number of small mutations on vectors, applying transformations to large collections rather than 2 or 3 dimentional vectors still prove to be highly inefficient. For instance, a 1024x768 image will have 786,432 RGB elements to mutate when applying uniform scaling operations. Fortunately for us, the <a href="https://developer.apple.com/documentation/accelerate">Accelerate</a> framework comes with the <a href="https://developer.apple.com/documentation/accelerate/vdsp-library">vDSP</a> module, and it is a perfect fit for our problem since it provides &ldquo;general purpose arithmetic on large collections&rdquo;. It follows the same principles as SIMD, only it is tailored to large datasets. Imagine we want to merge two images together. A naive approach would be to simply iterate over all of the pixel from the first image, get the corresponding pixel in the second image, calculate their sum and assign it to the pixel storage.</p>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">merge</span>(with other: Image) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">for</span> (i, value) <span style="color:#ff6ac1">in</span> other.enumerated() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">current</span> = storage[i]
+</span></span><span style="display:flex;"><span>        storage[i] = current <span style="color:#ff6ac1">+</span> value
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>But since we know the two images store their pixels with the same number of elements ordered identically, <code>vDSP</code> allows us to make that elementwise sum much more efficient with just about the same amount of code (less even).</p>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">func</span> <span style="color:#57c7ff">merge</span>(with other: Image) {
+</span></span><span style="display:flex;"><span>    storage = vDSP.add(other.storage, <span style="color:#ff6ac1">self</span>.storage)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now, this comes with a caveat, and it is that <code>vDSP</code> is much easier to setup with collections of scalar. For that reason, SwiftTracer&rsquo;s implementation of a <code>PixelBuffer</code> uses an array of <code>Float</code> instead of an array of RGB pixels. What this mean is that in order to mutate the i-th element using our expected <code>buffer[i] = value</code>, we must hide away that representation from the user.</p>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">subscript</span>(i: <span style="color:#ff5c57">Int</span>) -&gt; Color {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">get</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">index</span> = i <span style="color:#ff6ac1">*</span> <span style="color:#ff9f43">3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">return</span> Color(storage[index], storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">1</span>], storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">2</span>])
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">set</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">index</span> = i <span style="color:#ff6ac1">*</span> <span style="color:#ff9f43">3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">r</span> = storage[index]
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">g</span> = storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">1</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">b</span> = storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        storage[index] = newValue.x
+</span></span><span style="display:flex;"><span>        storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">1</span>] = newValue.y
+</span></span><span style="display:flex;"><span>        storage[index<span style="color:#ff6ac1">+</span><span style="color:#ff9f43">2</span>] = newValue.z
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 class="heading" id="parellel-processing">
   Parellel processing
   <a class="anchor" href="#parellel-processing">#</a>
 </h2>
@@ -271,8 +299,7 @@
 </span></span><span style="display:flex;"><span>    block.image = img
 </span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">return</span> block
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The collision detection is done using a combination of shape intersections, AABBs and even acceleration techniques like BVH. Several image formats like png, jpg, pfm and exr are supported.</p>
-<h2 class="heading" id="materials">
+</span></span></code></pre></div><h2 class="heading" id="materials">
   Materials
   <a class="anchor" href="#materials">#</a>
 </h2>
@@ -465,7 +492,7 @@
   Loading generic objects
   <a class="anchor" href="#loading-generic-objects">#</a>
 </h2>
-<p>The loading of my scenes rely heavily on the <code>Codable</code> protocol which has been natively available for a while, as well as a system of generic <code>Any</code> boxed types that can be converted to their concrete implementation. You can feed a json to SwiftTracer and it will gracefully do the conversion from the boxed type to the concrete implementations.</p>
+<p>The loading of my scenes relies heavily on the <code>Codable</code> protocol which has been available for a while, as well as a system of generic <code>Any</code> types that can be converted to their concrete implementation. You can feed a JSON to SwiftTracer and it will gracefully do the conversion from the boxed type to the concrete implementation.</p>
 <p>To illustrate that process, imagine you have a generic type you want to decode like <code>Material</code>. It has several implementations which all require different properties to be decoded. We start with <code>AnyMaterial</code>, a box type definition that encapsulates the types it wants to decode and a generic <code>wrapped</code> entity. It also has some high level coding keys shared by all of the <code>Material</code> implementations.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">struct</span> <span style="color:#f3f99d">AnyMaterial</span>: Decodable {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">enum</span> <span style="color:#f3f99d">TypeIdentifier</span>: <span style="color:#ff5c57">String</span>, Decodable {
@@ -509,7 +536,7 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">self</span>.wrapped = Diffuse(texture: texture)
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Using this is now quite simple; we need a properly formatted JSON with a list of such entities and we&rsquo;re ready to decode it the root decodable container.</p>
+</span></span></code></pre></div><p>Using this is now quite simple; we need a properly formatted JSON</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#ff6ac1">&#34;materials&#34;</span>: [{
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">&#34;name&#34;</span>: <span style="color:#5af78e">&#34;red-tint&#34;</span>,
@@ -517,7 +544,8 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">&#34;params&#34;</span>: { <span style="color:#ff6ac1">&#34;albedo&#34;</span>: [<span style="color:#ff9f43">0.95</span>, <span style="color:#ff9f43">0.1</span>, <span style="color:#ff9f43">0.1</span>] }
 </span></span><span style="display:flex;"><span>    }]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">init</span>(from decoder: Decoder) <span style="color:#ff6ac1">throws</span> {
+</span></span></code></pre></div><p>which can be decoded it in the root container.</p>
+<div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">init</span>(from decoder: Decoder) <span style="color:#ff6ac1">throws</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">container</span> = <span style="color:#ff6ac1">try</span> decoder.container(keyedBy: CodingKeys.<span style="color:#ff6ac1">self</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">generic</span> = <span style="color:#ff6ac1">try</span> container.decode([AnyMaterial].<span style="color:#ff6ac1">self</span>, forKey: .materials)
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">materials</span> = generic.<span style="color:#ff5c57">reduce</span>(into: [<span style="color:#ff5c57">String</span>: Material]()) {
@@ -534,35 +562,6 @@
 
   
   
-
-<div class="single-pagination">
-    <hr />
-
-    <div class="flexnowrap">
-
-        <div class="single-pagination-prev">
-            
-        </div>
-
-        <div class="single-pagination-next">
-            
-            <div class="single-pagination-container-next">
-                <div class="single-pagination-text">
-                    <a href="/projects/slash/">
-                        Slash
-                    </a>
-                </div>
-                <div class="single-pagination-text">→</div>
-            </div>
-            
-        </div>
-
-    </div>
-
-    <hr />
-</div>
-
-
 
   
 

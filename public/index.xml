@@ -9,18 +9,11 @@
     <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Slash</title>
-      <link>http://localhost:1313/projects/slash/</link>
-      <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/projects/slash/</guid>
-      <description>&lt;p&gt;Hack and slash game made with Unreal Engine 5.&lt;/p&gt;</description>
-    </item>
-    <item>
       <title>SwiftTracer - A physically based rendering engine</title>
       <link>http://localhost:1313/projects/swifttracer/</link>
       <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/projects/swifttracer/</guid>
-      <description>&lt;p&gt;SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&amp;rsquo;s degree.&lt;/p&gt;</description>
+      <description>&lt;p&gt;SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&amp;rsquo;s degree. The engine currently support several image formats like &lt;code&gt;png&lt;/code&gt;, &lt;code&gt;jpg&lt;/code&gt;, &lt;code&gt;pfm&lt;/code&gt; and &lt;code&gt;exr&lt;/code&gt;. See for yourself on &lt;a href=&#34;https://github.com/Prismik/SwiftTracer&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>About</title>

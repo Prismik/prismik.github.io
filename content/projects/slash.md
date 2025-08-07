@@ -1,6 +1,6 @@
 +++
 date = '2025-07-05'
-draft = false
+draft = true
 title = 'Slash'
 +++
 
