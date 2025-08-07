@@ -246,7 +246,7 @@ Using this is now quite simple; we need a properly formatted JSON
 
 ```
 
-which can be decoded it in the root container.
+which can be decoded in the root container.
 
 ```swift
 init(from decoder: Decoder) throws {

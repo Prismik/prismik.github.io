@@ -544,7 +544,7 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#ff6ac1">&#34;params&#34;</span>: { <span style="color:#ff6ac1">&#34;albedo&#34;</span>: [<span style="color:#ff9f43">0.95</span>, <span style="color:#ff9f43">0.1</span>, <span style="color:#ff9f43">0.1</span>] }
 </span></span><span style="display:flex;"><span>    }]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>which can be decoded it in the root container.</p>
+</span></span></code></pre></div><p>which can be decoded in the root container.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span><span style="color:#ff5c57">init</span>(from decoder: Decoder) <span style="color:#ff6ac1">throws</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">container</span> = <span style="color:#ff6ac1">try</span> decoder.container(keyedBy: CodingKeys.<span style="color:#ff6ac1">self</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#ff5c57">let</span> <span style="color:#ff5c57">generic</span> = <span style="color:#ff6ac1">try</span> container.decode([AnyMaterial].<span style="color:#ff6ac1">self</span>, forKey: .materials)
