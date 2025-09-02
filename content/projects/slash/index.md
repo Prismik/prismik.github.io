@@ -187,7 +187,7 @@ Once we have finished with the mappings, we need a way to trigger custom notifie
 Whenever a foot hits the ground in the animation, the custom `BP_Footstep` notify is triggered.
 {.image-caption}
 
-In that blueprint, we 2 things happen:
+In that blueprint, two things happen:
 
 1. A linetrace from a point slightly above the character's location. When it succeeds, we get a hit result that will have an associated physical material (make sure to setup the `default` mapping as a fallback).
 2. Find the physical material in our data asset and play the sound associated with it.
