@@ -19,3 +19,9 @@
 pre {
     background-color: #282a36 !important;
 }
+
+.image-caption {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.9em;
+}

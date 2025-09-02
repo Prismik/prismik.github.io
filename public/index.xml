@@ -16,6 +16,13 @@
       <description>&lt;p&gt;SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&amp;rsquo;s degree. The engine currently support several image formats like &lt;code&gt;png&lt;/code&gt;, &lt;code&gt;jpg&lt;/code&gt;, &lt;code&gt;pfm&lt;/code&gt; and &lt;code&gt;exr&lt;/code&gt;. See for yourself on &lt;a href=&#34;https://github.com/Prismik/SwiftTracer&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Slash - An Unreal Engine 5 experiment</title>
+      <link>http://localhost:1313/projects/slash/</link>
+      <pubDate>Fri, 04 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/slash/</guid>
+      <description>&lt;p&gt;Wanting to learn Unreal Engine 5, I set out to follow &lt;a href=&#34;https://www.udemy.com/course/unreal-engine-5-the-ultimate-game-developer-course/&#34;&gt;this course&lt;/a&gt; from Stephen Ulibarri which covers a lot of topics. I ended up falling into many rabbit holes, adding many little details that were not covered by the lectures.&lt;/p&gt;&#xA;&lt;h2 class=&#34;heading&#34; id=&#34;main-menu&#34;&gt;&#xA;  Main menu&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#main-menu&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;h3 class=&#34;heading&#34; id=&#34;loading-a-level&#34;&gt;&#xA;  Loading a level&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#loading-a-level&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;p&gt;One of the first things I wanted to add was a nice looking main menu to which we can navigate to and from various states of the game. My first naive approach was to simply call &lt;a href=&#34;https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel&#34;&gt;openLevel&lt;/a&gt; from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way &lt;code&gt;openLevel&lt;/code&gt; function works explains why that happens in the first place. First, it synchronously unloads the entire level you&amp;rsquo;re in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>About</title>
       <link>http://localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

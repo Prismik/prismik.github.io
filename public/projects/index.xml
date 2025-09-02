@@ -6,8 +6,15 @@
     <description>Recent content in Projects on Francis Beauchamp</description>
     <generator>Hugo</generator>
     <language>en-CA</language>
-    <lastBuildDate>Sat, 05 Jul 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 02 Sep 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slash - An Unreal Engine 5 experiment</title>
+      <link>http://localhost:1313/projects/slash/</link>
+      <pubDate>Tue, 02 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/slash/</guid>
+      <description>&lt;p&gt;Wanting to learn Unreal Engine 5, I set out to follow &lt;a href=&#34;https://www.udemy.com/course/unreal-engine-5-the-ultimate-game-developer-course/&#34;&gt;this course&lt;/a&gt; from Stephen Ulibarri which covers a lot of topics. I ended up falling into many rabbit holes, adding many little details that were not covered by the lectures.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>SwiftTracer - A physically based rendering engine</title>
       <link>http://localhost:1313/projects/swifttracer/</link>

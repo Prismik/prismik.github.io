@@ -8,11 +8,11 @@
     <loc>http://localhost:1313/projects/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/projects/slash/</loc>
-    <lastmod>2025-07-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/projects/swifttracer/</loc>
     <lastmod>2025-07-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/projects/slash/</loc>
+    <lastmod>2025-07-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/about/</loc>
   </url><url>

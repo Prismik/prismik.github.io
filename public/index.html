@@ -217,6 +217,36 @@ My current interests are all over the place and include algorithms, computer gra
     </div>
 </div>
     
+    <div class="post-line">
+
+    
+
+    
+        <p class="line-date">4 Jul 2025 </p>
+    
+
+    <div>
+        <p class="line-title">
+            <a href="/projects/slash/">
+                Slash - An Unreal Engine 5 experiment
+            </a>
+        </p>
+
+        
+        <p class="line-summary"> <p>Wanting to learn Unreal Engine 5, I set out to follow <a href="https://www.udemy.com/course/unreal-engine-5-the-ultimate-game-developer-course/">this course</a> from Stephen Ulibarri which covers a lot of topics. I ended up falling into many rabbit holes, adding many little details that were not covered by the lectures.</p>
+<h2 class="heading" id="main-menu">
+  Main menu
+  <a class="anchor" href="#main-menu">#</a>
+</h2>
+<h3 class="heading" id="loading-a-level">
+  Loading a level
+  <a class="anchor" href="#loading-a-level">#</a>
+</h3>
+<p>One of the first things I wanted to add was a nice looking main menu to which we can navigate to and from various states of the game. My first naive approach was to simply call <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel">openLevel</a> from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way <code>openLevel</code> function works explains why that happens in the first place. First, it synchronously unloads the entire level you&rsquo;re in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.</p> </p>
+        
+    </div>
+</div>
+    
 
     
 
