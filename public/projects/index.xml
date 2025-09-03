@@ -20,7 +20,7 @@
       <link>http://localhost:1313/projects/swifttracer/</link>
       <pubDate>Sat, 05 Jul 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/projects/swifttracer/</guid>
-      <description>&lt;p&gt;SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&amp;rsquo;s degree. The engine currently support several image formats like &lt;code&gt;png&lt;/code&gt;, &lt;code&gt;jpg&lt;/code&gt;, &lt;code&gt;pfm&lt;/code&gt; and &lt;code&gt;exr&lt;/code&gt;. See for yourself on &lt;a href=&#34;https://github.com/Prismik/SwiftTracer&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;</description>
+      <description>&lt;p&gt;SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master&amp;rsquo;s degree. The engine currently supports several image formats like &lt;code&gt;png&lt;/code&gt;, &lt;code&gt;jpg&lt;/code&gt;, &lt;code&gt;pfm&lt;/code&gt; and &lt;code&gt;exr&lt;/code&gt;. See for yourself on &lt;a href=&#34;https://github.com/Prismik/SwiftTracer&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

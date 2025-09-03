@@ -6,17 +6,17 @@ title = 'SwiftTracer - A physically based rendering engine'
   math = true
 +++
 
-SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master's degree. The engine currently support several image formats like `png`, `jpg`, `pfm` and `exr`. See for yourself on [github](https://github.com/Prismik/SwiftTracer).
+SwiftTracer is a Swift implementation of a physically based rendering engine inspired by PBRT, Mitsuba and many other contributors. It was built to support my research efforts as part of my master's degree. The engine currently supports several image formats like `png`, `jpg`, `pfm` and `exr`. See for yourself on [github](https://github.com/Prismik/SwiftTracer).
 
 <!--more-->
-But what does "physically based" even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the [rendering equation](https://doi.org/10.1145/15886.15902) which allows us to do just that with the help of techniques such as Monte-Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.
+But what does "physically based" even mean? For one, we are interested in simulating the behaviour of light such that it respects the laws of physics. Kajiya first introduced the [rendering equation](https://doi.org/10.1145/15886.15902) which allows us to do just that with the help of techniques such as Monte Carlo integration. By accumulating several light paths randomly generated, we obtain an approximation of the light propagation within a scene. This approach can be used to represent complex light effects such as caustics and subsurface scattering.
 
 ## Mathematical operations
-At it's core, SwiftTracer uses [simd](https://developer.apple.com/documentation/accelerate/simd-library) to perform the mathematical computations: mostly vectors and matrices operations along with some trigonometry. Why does this matter? Because it turns out that ray tracing requires a lot of vector operations, both for image handling and the actual tracing. Imagine you want to sum the contributions of many images to get their average, or say, scale all of their values by a scalar. We would normally make such operations for each pixels. But since simd handles multiple data with a single instruction, it's a perfect fit for this kind of problem. We can store an image as a vector of scalars, and use a single instruction to apply transformation on each of it's elements.
+At its core, SwiftTracer uses [simd](https://developer.apple.com/documentation/accelerate/simd-library) to perform the mathematical computations: mostly vectors and matrices operations along with some trigonometry. Why does this matter? Because it turns out that ray tracing requires a lot of vector operations, both for image handling and the actual tracing. Imagine you want to sum the contributions of many images to get their average, or say, scale all of their values by a scalar. We would normally make such operations for each pixel. But since simd handles multiple data with a single instruction, it's a perfect fit for this kind of problem. We can store an image as a vector of scalars, and use a single instruction to apply transformation on each of its elements.
 
 ![simd](images/simd.png)
 
-While this is good enough for large number of small mutations on vectors, applying transformations to large collections rather than 2 or 3 dimentional vectors still prove to be highly inefficient. For instance, a 1024x768 image will have 786,432 RGB elements to mutate when applying uniform scaling operations. Fortunately for us, the [Accelerate](https://developer.apple.com/documentation/accelerate) framework comes with the [vDSP](https://developer.apple.com/documentation/accelerate/vdsp-library) module, and it is a perfect fit for our problem since it provides "general purpose arithmetic on large collections". It follows the same principles as SIMD, only it is tailored to large datasets. Imagine we want to merge two images together. A naive approach would be to simply iterate over all of the pixel from the first image, get the corresponding pixel in the second image, calculate their sum and assign it to the pixel storage.
+While this is good enough for a large number of small mutations on vectors, applying transformations to large collections rather than 2 or 3 dimensional vectors still prove to be highly inefficient. For instance, a 1024x768 image will have 786,432 RGB elements to mutate when applying uniform scaling operations. Fortunately for us, the [Accelerate](https://developer.apple.com/documentation/accelerate) framework comes with the [vDSP](https://developer.apple.com/documentation/accelerate/vdsp-library) module, and it is a perfect fit for our problem since it provides "general purpose arithmetic on large collections". It follows the same principles as SIMD, only it is tailored to large datasets. Imagine we want to merge two images together. A naive approach would be to simply iterate over all of the pixels from the first image, get the corresponding pixel in the second image, calculate their sum and assign it to the pixel storage.
 
 ```swift
 func merge(with other: Image) {
@@ -35,7 +35,7 @@ func merge(with other: Image) {
 }
 ```
 
-Now, this comes with a caveat, and it is that `vDSP` is much easier to setup with collections of scalar. For that reason, SwiftTracer's implementation of a `PixelBuffer` uses an array of `Float` instead of an array of RGB pixels. What this mean is that in order to mutate the i-th element using our expected `buffer[i] = value`, we must hide away that representation from the user.
+Now, this comes with a caveat, and it is that `vDSP` is much easier to set up with collections of scalar. For that reason, SwiftTracer's implementation of a `PixelBuffer` uses an array of `Float` instead of an array of RGB pixels. What this mean is that in order to mutate the i-th element using our expected `buffer[i] = value`, we must hide away that representation from the user.
 
 ```swift
 subscript(i: Int) -> Color {
@@ -119,7 +119,7 @@ func blocks(size: Int, res: Vec2) async -> [Block] {
 }
 ```
 
-Finally, we can implement our own integration methods. The most simple version of that is a Monte-Carlo estimation that computes the luminance $L$ with a unidirectional path tracing algorithm. For each pixel $(x, y)$ in the block, we will cast $n$ rays of light and average their total contributions by the number of samples $n$.
+Finally, we can implement our own integration methods. The simplest version of that is a Monte Marlo estimation that computes the luminance $L$ with a unidirectional path tracing algorithm. For each pixel $(x, y)$ in the block, we will cast $n$ rays of light and average their total contributions by the number of samples $n$.
 
 ```swift
 func integrate(size: Vec2, p: Vec2, samples n: Int = 5) -> Block {
@@ -148,7 +148,7 @@ Whenever light collides with a surface, it will scatter differently based on the
 
 ![light-scattering](images/scattering.png)
 
-SwiftTracer currently implements 4 base materials, which use their own distribution functions to support light scattering. On top of these, it is possible to blend them with a linear combination of two different materials. The strenght of the blend can be defined by an `alpha` parameter.
+SwiftTracer currently implements 4 base materials, which use their own distribution functions to support light scattering. On top of these, it is possible to blend them with a linear combination of two different materials. The strength of the blend can be defined by an `alpha` parameter.
 
 | Diffuse | Smooth metal | Rough metal | Glass | Blend | 
 | :-: | :-: | :-: | :-: | :-: | 
@@ -158,7 +158,7 @@ SwiftTracer currently implements 4 base materials, which use their own distribut
 While any numbers of geometry like cylinders, disks, spheres could have been implemented, SwiftTracer supports only a few primitives, with a bigger emphasis on meshes and triangles. For light sources or quick tests, it can be convenient to have simple shapes available, so `Quad` and `Sphere` were also added to that end.
 
 ### Mesh
-The only mesh format supported at the moment is wavefront (obj). To drive the parsing and loading process, I ported over to [SwiftWavefront](https://github.com/Prismik/SwiftWavefront) the most basic parts of [TinyObj](https://github.com/tinyobjloader/tinyobjloader), a very popular C++ implementation. SwiftWavefront can be consummed as a swift package and offers ready to use meshes with vertices, normals and texture coordinates.
+The only mesh format supported at the moment is wavefront (obj). To drive the parsing and loading process, I ported over to [SwiftWavefront](https://github.com/Prismik/SwiftWavefront) the most basic parts of [TinyObj](https://github.com/tinyobjloader/tinyobjloader), a very popular C++ implementation. SwiftWavefront can be consumed as a swift package and offers ready to use meshes with vertices, normals and texture coordinates.
 
 ![SwiftWavefrontApi](images/swiftwavefront.png)
 
@@ -173,7 +173,7 @@ positions = stride(from: 0, through: obj.vertices.count - 1, by: 3).map { i in
     return transform.point(Vec3(x, y, z))
 }
 ```
-Triangle intersection uses the [Möller–Trumbore ray-triangle intersection algorithm](https://dl.acm.org/doi/10.1145/1198555.1198746). Vertices and normals are currently supported, but tangents will be added at a later time when I implement microfacets.
+The triangle intersection uses the [Möller–Trumbore ray-triangle intersection algorithm](https://dl.acm.org/doi/10.1145/1198555.1198746). Vertices and normals are currently supported, but tangents will be added at a later time when I implement [microfacets](https://www.pbr-book.org/3ed-2018/Reflection_Models/Microfacet_Models).
 
 ## Loading generic objects
 The loading of my scenes relies heavily on the `Codable` protocol which has been available for a while, as well as a system of generic `Any` types that can be converted to their concrete implementation. You can feed a JSON to SwiftTracer and it will gracefully do the conversion from the boxed type to the concrete implementation.
@@ -216,7 +216,7 @@ final class Diffuse: Material {
 }
 ```
 
-We can now decode that type in `AnyMaterial` and store it in the wrapped property without worrying about it's concrete implementation.
+We can now decode that type in `AnyMaterial` and store it in the wrapped property without worrying about its concrete implementation.
 
 ```swift
 init(from decoder: Decoder) throws {

@@ -11,7 +11,7 @@ Wanting to learn Unreal Engine 5, I set out to follow [this course](https://www.
 ## Main menu
 
 ### Loading a level
-One of the first things I wanted to add was a nice looking main menu to which we can navigate to and from various states of the game. My first naive approach was to simply call [openLevel](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel) from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way `openLevel` function works explains why that happens in the first place. First, it synchronously unloads the entire level you're in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.
+One of the first things I wanted to add was a nice-looking main menu to drive the navigation betweem various states of the game. My first naive approach was to simply call [openLevel](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel) from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way `openLevel` function works explain why that happens in the first place. First, it synchronously unloads the entire level you're in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.
 
 ### Stream levels
 Little did I know that Unreal has a nice way to [load stream levels](https://dev.epicgames.com/documentation/en-us/unreal-engine/level-streaming-overview-in-unreal-engine?application_version=5.4/), a better way to load partial (or even entire) levels. In order to make that happen, we must first create a **persistent** level that contains all of the sub-levels we want to load/unload asynchronously. The advantage of that approach is that we free up a lot of memory dynamically as we progress between the different areas of our game. AAA titles often implement what is commonly called a **loading corridor**. They serve the purpose of a buffer zone where an async memory management routine is triggered. That usually involves loading the next area and freeing up resources from the past section. On my end, the way I manage such transitions is a 3-way process that involves a loading screen:
@@ -26,25 +26,20 @@ This blueprint is added to the `GameMode` and handles the 3-way loading processe
 {.image-caption}
 
 ### See it in action
-
-This short video presents the main menu level and how it transitions to the game with a loading screen without interuptions in the audio channel.
+This short video presents the main menu level and how it transitions to the game with a loading screen without interruptions in the audio channel.
 
 {{< youtube id="TTqH0b_3_Uk" >}}
 
 ## Character interactions
-
 The main characters can interact with the environment in several ways; I'm going to present a few of them which I found interesting.
 
 ### Text dispensers
-
-To convey messages the the player, I've added text dispenser actors, which can be configured by simply setting their `text` value. When the character overlaps with the sphere component of these dispensers, they will start typing the `text`, one letter at a time, producing a randomized typing machine sound for each letter. Upon leaving the sphere's radius, the message will animate the scale and alpha value to zero before removing it from the game. We can set the dispenser so it only displays the message a fixed number of times (once would have a value of `1`).
+To convey simple messages to the player, I've added text dispenser actors, which can be configured by setting their `text` value. When the character overlaps with the sphere component of these dispensers, they will start typing the `text`, one letter at a time, producing a randomized typing machine sound for each letter. Upon leaving the sphere's radius, the message will animate the scale and alpha value to zero before removing it from the game. We can set the dispenser so it only displays the message a fixed number of times (once would have a value of `1`).
 
 ### Weapons
-
 The weapons and combat system have a lot going on, but most of it was covered by Stephen's class. I'll focus on the extra features I've added that went beyond the scope of the lectures.
 
 #### Attack chains
-
 Instead of randomly selecting an attack, weapons have associated chains of attacks tied to them. An implementation of the interface, `IComboGenerator`, has to be created. Currently, weapons and enemies are the two actors that implement it; enemies can have several invisible weapons tied to their hands and various other hitboxes added dynamically.
 
 ```cpp
@@ -65,7 +60,7 @@ Specifically, `InitiateAttack` is linked to a `initiate()` call. This sets the `
 
 ![attack-notifies](images/attack-notifies.png)
 
-The different notifies are time sensitive. Notably `ResetCombo` won't be reached if we trigger an attack after `SaveAttack`, progressing further in the chain of attacks.
+The notify events are time sensitive. Notably `ResetCombo` won't be reached if we trigger an attack after `SaveAttack`, progressing further in the chain of attacks.
 {.image-caption}
 
 ```cpp
@@ -98,13 +93,12 @@ protected:
 ```
 
 #### Focus points
-
 The character has two movement modes he can switch between:
 
-1. The **standard** mode where he walks in a forward facing manner, usually used to navigate in the world.
+1. The **standard** mode where he walks in a forward-facing manner, usually used to navigate in the world.
 2. The **focus** mode, where the camera tracks a focus point on the enemies and the movements are slower and oriented toward the focus.
 
-In order to create focusable targets, I have added a socket on their heads and assigned a widget blueprint with a **dot** marker. This blueprint is presented in world space since it needs to move with the enemy's movements. The current version is very barebones in that we don't track focus priorities. We have a sphere on the character that add overlapping enemies to a list; when the player triggers the focus action, we take the last valid enemy, display it's focus marker and enter in the focus mode.
+In order to create focusable targets, I have added a socket on their heads and assigned a widget blueprint with a **dot** marker. This blueprint is presented in world space since it needs to move with the enemy's movements. The current version is very barebones in that we don't track focus priorities. We have a sphere on the character that adds overlapping enemies to a list; when the player triggers the focus action, we take the last valid enemy, display its focus marker and enter in the focus mode.
 
 ```cpp
 void AMainCharacter::focus(const FInputActionValue& Value) {
@@ -118,7 +112,7 @@ void AMainCharacter::focus(const FInputActionValue& Value) {
 }
 ```
 
-The focus mode changes the way movement works for the character; we move more slowly in all directions while alway facing the focused target. To get the `right` motion vector, we use the vector between the character and it's target, then apply a cross product with the up vector. It results in the character following a circular motion around the focus target instead of wandering off in a straight line. To play the correct movement animation, the blueprint can use the `directionalSpeed` to blend between animations using a blend space. Finally, selecting the appropriate dodge animation to play requires the use of an `inputDirection`.
+The focus mode changes the way movement works for the character; we move more slowly in all directions while always facing the focused target. To get the `right` motion vector, we use the vector between the character and its target, then apply a cross product with the up vector. It results in the character following a circular motion around the focus target instead of wandering off in a straight line. To play the correct movement animation, the blueprint can use the `directionalSpeed` to blend between animations using a blend space. Finally, selecting the appropriate dodge animation to play requires the use of an `inputDirection`.
 
 ```cpp
 void AMainCharacter::move(const FInputActionValue& Value) {
@@ -155,8 +149,7 @@ void AMainCharacter::move(const FInputActionValue& Value) {
 ```
 
 ### Destructibles
-
-Some actors can be destroyed because they've been converted to mesh collection. These meshes are fragmented in several parts which are held together by a "force". Granted that we apply enough counter force on the mesh, it will fall apart and the pieces will be thrown in various directions. One of the ways we do this in Unreal Engine is by applying a strain at a point of impact, then we give them a linear motion with a physics field.
+Some actors can be destroyed because they've been converted to mesh collection. These meshes are fragmented in several parts which are held together by a force. Granted that we apply enough counterforce on the mesh, it will fall apart and the pieces will be thrown in various directions. One of the ways we do this in Unreal Engine is by applying a strain at a point of impact, then we give them a linear motion with a physics field.
 
 {{< blueprint src="https://blueprintue.com/render/dcx601b3/" height="500px">}}
 
@@ -170,17 +163,16 @@ This short video presents the different character features that were introduced 
 {{< youtube id="j_yeXZJId94" >}}
 
 ## Dynamic footsteps
-
 One of the instances where I went down a rabbit hole was by adding dynamic footsteps that would produce different sounds based on the surface the feet interact with. My approach is quite simple: assign physical materials to my textures and objects, give the materials their associated sound and play them instead of a fixed sound baked in the animation.
 
-We start by creating a data asset containing the mappings of physical material and their associated sounds. We can decide to use raw wave assets, audio cues or metasounds. I have opted for metasounds because they allow better customization. Each `sfx` instance has a metasound blueprints which includes some randomization logic. We setup the values for the different footstep audios and shuffle them before playing the chosen sound with a random volume and pitch variation.
+We start by creating a data asset containing the mappings of physical material and their associated sounds. We can decide to use raw wave assets, audio cues or metasounds. I have opted for metasounds because they allow better customization. Each `sfx` instance has a metasound blueprints which includes some randomization logic. We set up the values for the different footstep audios and shuffle them before playing the chosen sound with a random volume and pitch variation.
 
 {{< blueprint src="https://blueprintue.com/render/p5490m5o/" height="500px">}}
 
 This blueprint illustrates the randomization process that creates a sound that feels less repetitive.
 {.image-caption}
 
-Once we have finished with the mappings, we need a way to trigger custom notifies in our animations whenever a foot touches the ground. The naive approach is simply play the audio here, but it doesn't allow to change the sound based on the surfaces. In my case, the `PlaySound` notify is changed for a custom blueprint class called `BP_Footstep`.
+Once we have finished with the mappings, we need a way to trigger custom notifies in our animations whenever a foot touches the ground. The naive approach is simply play the audio here, but it doesn't allow us to change the sound based on the surfaces. In my case, the `PlaySound` notify is changed for a custom blueprint class called `BP_Footstep`.
 
 ![footstep-notify](images/footstep-notify.png)
 
@@ -189,12 +181,12 @@ Whenever a foot hits the ground in the animation, the custom `BP_Footstep` notif
 
 In that blueprint, two things happen:
 
-1. A linetrace from a point slightly above the character's location. When it succeeds, we get a hit result that will have an associated physical material (make sure to setup the `default` mapping as a fallback).
+1. A line trace from a point slightly above the character's location. When it succeeds, we get a hit result that will have an associated physical material (make sure to set up the `default` mapping as a fallback).
 2. Find the physical material in our data asset and play the sound associated with it.
 
 {{< blueprint src="https://blueprintue.com/render/_nc32jrx/" height="500px">}}
 
-This blueprint illustrates the linetrace and selection of an appropriate audio.
+This blueprint illustrates the line trace and selection of an appropriate audio.
 {.image-caption}
 
 ### See it in action
@@ -204,7 +196,7 @@ This short video presents the different footstep sounds implemented in my game.
 
 ## Enemy AI
 
-The enemy AI was not built using decisions tree, but by keeping track of the different states in c++. I became very quickly apparent how my approach would become problematic as I started adding more behavior variations to my enemies. On top of that, Stephen's class proposes to build these features within a reusable `Enemy` class which leads to a very large amount of code in the same pace. I have opted to create a custom `aiController` class that can be assigned to my enemies. If I want to create a completely different type of behavior, I simply need to implement a new `aiController`.
+The enemy AI was not built using decisions tree, but by keeping track of the different states in c++. I became very quickly apparent how my approach would become problematic as I started adding more behaviour variations to my enemies. On top of that, Stephen's class proposes to build these features within a reusable `Enemy` class which leads to a very large amount of code in the same pace. I have opted to create a custom `aiController` class that can be assigned to my enemies. If I want to create a completely different type of behaviour, I simply need to implement a new `aiController`.
 
 To react to the player's presence, I use the [AIPerceptionComponent](https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine) with a configured sight sense. This allows my enemies to react to the player's presence whenever it enters their field of sight. Whenever that happens, and depending on the distance between an enemy and the player, different states will be reached and change the way it behaves.
 
@@ -233,7 +225,7 @@ void AEnemyAiController::Tick(float DeltaTime) {
 }
 ```
 
-The setup for perceiving the player and move between states is as simple as implementing one function. Whenever our configured sight stimulus is active, we start chasing the seen player. 
+Setting up the perception of a player and moving between states is as simple as implementing one function. Whenever our configured sight stimulus is active, we start chasing the seen player. 
 
 ```cpp
 void AEnemyAiController::onPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus) {
@@ -250,7 +242,7 @@ void AEnemyAiController::onPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 }
 ```
 
-In order to better track the player during attacks, we slowly update orientation at a given speed during the animation. This prevents attacks from rooting the enemy into place and always missing when the player is currently moving.
+In order to better track the player during attacks, we slowly update orientation at a given speed during the animation. This prevents attacks from making the enemy rooted in place and always missing when the player is currently moving.
 
 ```cpp
 void AEnemyAiController::faceTarget(AActor* target, float dt, float speed) {
@@ -275,7 +267,7 @@ void AEnemyAiController::updatePatrolTarget() {
 }
 ```
 
-When alerted by the player's presence, an enemy will either chase or attack them depending on how far away they are from one another. During an attack animation, the enemy is considered `Enagaged` and cannot do any other actions such as moving or attacking. As soon as the player reaches a "safe distance" the enemy will revert back to it's patrol state and resume updating it's patrol targets.
+When alerted by the player's presence, an enemy will either chase or attack them depending on how far away they are from one another. During an attack animation, the enemy is considered `Enagaged` and cannot do any other actions such as moving or attacking. As soon as the player reaches a "safe distance" the enemy will revert back to its patrol state and resume updating the patrol targets.
 
 ```cpp
 AActor* AEnemyAiController::updateCombatTarget() {

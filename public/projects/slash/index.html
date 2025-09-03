@@ -174,7 +174,7 @@
   Loading a level
   <a class="anchor" href="#loading-a-level">#</a>
 </h3>
-<p>One of the first things I wanted to add was a nice looking main menu to which we can navigate to and from various states of the game. My first naive approach was to simply call <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel">openLevel</a> from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way <code>openLevel</code> function works explains why that happens in the first place. First, it synchronously unloads the entire level you&rsquo;re in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.</p>
+<p>One of the first things I wanted to add was a nice-looking main menu to drive the navigation betweem various states of the game. My first naive approach was to simply call <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UGameplayStatics/OpenLevel">openLevel</a> from my blueprints. However, it has the unpleasant side effect of creating stutters in the game. The way <code>openLevel</code> function works explain why that happens in the first place. First, it synchronously unloads the entire level you&rsquo;re in; then, it will load the new one and only once all of that is completed will the game resume, resulting in a suboptimal experience.</p>
 <h3 class="heading" id="stream-levels">
   Stream levels
   <a class="anchor" href="#stream-levels">#</a>
@@ -191,7 +191,7 @@
   See it in action
   <a class="anchor" href="#see-it-in-action">#</a>
 </h3>
-<p>This short video presents the main menu level and how it transitions to the game with a loading screen without interuptions in the audio channel.</p>
+<p>This short video presents the main menu level and how it transitions to the game with a loading screen without interruptions in the audio channel.</p>
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
       <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/TTqH0b_3_Uk?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
     </div>
@@ -205,7 +205,7 @@
   Text dispensers
   <a class="anchor" href="#text-dispensers">#</a>
 </h3>
-<p>To convey messages the the player, I&rsquo;ve added text dispenser actors, which can be configured by simply setting their <code>text</code> value. When the character overlaps with the sphere component of these dispensers, they will start typing the <code>text</code>, one letter at a time, producing a randomized typing machine sound for each letter. Upon leaving the sphere&rsquo;s radius, the message will animate the scale and alpha value to zero before removing it from the game. We can set the dispenser so it only displays the message a fixed number of times (once would have a value of <code>1</code>).</p>
+<p>To convey simple messages to the player, I&rsquo;ve added text dispenser actors, which can be configured by setting their <code>text</code> value. When the character overlaps with the sphere component of these dispensers, they will start typing the <code>text</code>, one letter at a time, producing a randomized typing machine sound for each letter. Upon leaving the sphere&rsquo;s radius, the message will animate the scale and alpha value to zero before removing it from the game. We can set the dispenser so it only displays the message a fixed number of times (once would have a value of <code>1</code>).</p>
 <h3 class="heading" id="weapons">
   Weapons
   <a class="anchor" href="#weapons">#</a>
@@ -248,7 +248,7 @@
     
 </figure>
 </p>
-<p class="image-caption">The different notifies are time sensitive. Notably <code>ResetCombo</code> won&rsquo;t be reached if we trigger an attack after <code>SaveAttack</code>, progressing further in the chain of attacks.</p>
+<p class="image-caption">The notify events are time sensitive. Notably <code>ResetCombo</code> won&rsquo;t be reached if we trigger an attack after <code>SaveAttack</code>, progressing further in the chain of attacks.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#ff6ac1">class</span> <span style="color:#f3f99d">SLASH_API</span> <span style="color:#ff5c57">UComboTracker</span> : <span style="color:#ff6ac1">public</span> UActorComponent {
 </span></span><span style="display:flex;"><span>	GENERATED_BODY()
 </span></span><span style="display:flex;"><span>
@@ -281,10 +281,10 @@
 </h4>
 <p>The character has two movement modes he can switch between:</p>
 <ol>
-<li>The <strong>standard</strong> mode where he walks in a forward facing manner, usually used to navigate in the world.</li>
+<li>The <strong>standard</strong> mode where he walks in a forward-facing manner, usually used to navigate in the world.</li>
 <li>The <strong>focus</strong> mode, where the camera tracks a focus point on the enemies and the movements are slower and oriented toward the focus.</li>
 </ol>
-<p>In order to create focusable targets, I have added a socket on their heads and assigned a widget blueprint with a <strong>dot</strong> marker. This blueprint is presented in world space since it needs to move with the enemy&rsquo;s movements. The current version is very barebones in that we don&rsquo;t track focus priorities. We have a sphere on the character that add overlapping enemies to a list; when the player triggers the focus action, we take the last valid enemy, display it&rsquo;s focus marker and enter in the focus mode.</p>
+<p>In order to create focusable targets, I have added a socket on their heads and assigned a widget blueprint with a <strong>dot</strong> marker. This blueprint is presented in world space since it needs to move with the enemy&rsquo;s movements. The current version is very barebones in that we don&rsquo;t track focus priorities. We have a sphere on the character that adds overlapping enemies to a list; when the player triggers the focus action, we take the last valid enemy, display its focus marker and enter in the focus mode.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#9aedfe">void</span> AMainCharacter<span style="color:#ff6ac1">::</span>focus(<span style="color:#ff6ac1">const</span> FInputActionValue<span style="color:#ff6ac1">&amp;</span> Value) {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> (isFocused()) {
 </span></span><span style="display:flex;"><span>		focus(<span style="color:#ff6ac1">nullptr</span>);
@@ -294,7 +294,7 @@
 </span></span><span style="display:flex;"><span>		focus(enemy);
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The focus mode changes the way movement works for the character; we move more slowly in all directions while alway facing the focused target. To get the <code>right</code> motion vector, we use the vector between the character and it&rsquo;s target, then apply a cross product with the up vector. It results in the character following a circular motion around the focus target instead of wandering off in a straight line. To play the correct movement animation, the blueprint can use the <code>directionalSpeed</code> to blend between animations using a blend space. Finally, selecting the appropriate dodge animation to play requires the use of an <code>inputDirection</code>.</p>
+</span></span></code></pre></div><p>The focus mode changes the way movement works for the character; we move more slowly in all directions while always facing the focused target. To get the <code>right</code> motion vector, we use the vector between the character and its target, then apply a cross product with the up vector. It results in the character following a circular motion around the focus target instead of wandering off in a straight line. To play the correct movement animation, the blueprint can use the <code>directionalSpeed</code> to blend between animations using a blend space. Finally, selecting the appropriate dodge animation to play requires the use of an <code>inputDirection</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#9aedfe">void</span> AMainCharacter<span style="color:#ff6ac1">::</span>move(<span style="color:#ff6ac1">const</span> FInputActionValue<span style="color:#ff6ac1">&amp;</span> Value) {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> (actionState <span style="color:#ff6ac1">!=</span> EActionState<span style="color:#ff6ac1">::</span>EAS_unoccupied) <span style="color:#ff6ac1">return</span>;
 </span></span><span style="display:flex;"><span>	
@@ -330,7 +330,7 @@
   Destructibles
   <a class="anchor" href="#destructibles">#</a>
 </h3>
-<p>Some actors can be destroyed because they&rsquo;ve been converted to mesh collection. These meshes are fragmented in several parts which are held together by a &ldquo;force&rdquo;. Granted that we apply enough counter force on the mesh, it will fall apart and the pieces will be thrown in various directions. One of the ways we do this in Unreal Engine is by applying a strain at a point of impact, then we give them a linear motion with a physics field.</p>
+<p>Some actors can be destroyed because they&rsquo;ve been converted to mesh collection. These meshes are fragmented in several parts which are held together by a force. Granted that we apply enough counterforce on the mesh, it will fall apart and the pieces will be thrown in various directions. One of the ways we do this in Unreal Engine is by applying a strain at a point of impact, then we give them a linear motion with a physics field.</p>
  <iframe src="https://blueprintue.com/render/dcx601b3/" frameborder="0" scrolling="no" width="100%" height="500px" allowfullscreen></iframe>
 <p class="image-caption">This blueprint illustrates the creation of a physics force that breaks destructible meshes.</p>
 <h3 class="heading" id="see-it-in-action-1">
@@ -347,10 +347,10 @@
   <a class="anchor" href="#dynamic-footsteps">#</a>
 </h2>
 <p>One of the instances where I went down a rabbit hole was by adding dynamic footsteps that would produce different sounds based on the surface the feet interact with. My approach is quite simple: assign physical materials to my textures and objects, give the materials their associated sound and play them instead of a fixed sound baked in the animation.</p>
-<p>We start by creating a data asset containing the mappings of physical material and their associated sounds. We can decide to use raw wave assets, audio cues or metasounds. I have opted for metasounds because they allow better customization. Each <code>sfx</code> instance has a metasound blueprints which includes some randomization logic. We setup the values for the different footstep audios and shuffle them before playing the chosen sound with a random volume and pitch variation.</p>
+<p>We start by creating a data asset containing the mappings of physical material and their associated sounds. We can decide to use raw wave assets, audio cues or metasounds. I have opted for metasounds because they allow better customization. Each <code>sfx</code> instance has a metasound blueprints which includes some randomization logic. We set up the values for the different footstep audios and shuffle them before playing the chosen sound with a random volume and pitch variation.</p>
  <iframe src="https://blueprintue.com/render/p5490m5o/" frameborder="0" scrolling="no" width="100%" height="500px" allowfullscreen></iframe>
 <p class="image-caption">This blueprint illustrates the randomization process that creates a sound that feels less repetitive.</p>
-<p>Once we have finished with the mappings, we need a way to trigger custom notifies in our animations whenever a foot touches the ground. The naive approach is simply play the audio here, but it doesn&rsquo;t allow to change the sound based on the surfaces. In my case, the <code>PlaySound</code> notify is changed for a custom blueprint class called <code>BP_Footstep</code>.</p>
+<p>Once we have finished with the mappings, we need a way to trigger custom notifies in our animations whenever a foot touches the ground. The naive approach is simply play the audio here, but it doesn&rsquo;t allow us to change the sound based on the surfaces. In my case, the <code>PlaySound</code> notify is changed for a custom blueprint class called <code>BP_Footstep</code>.</p>
 <p>
 
 
@@ -375,11 +375,11 @@
 <p class="image-caption">Whenever a foot hits the ground in the animation, the custom <code>BP_Footstep</code> notify is triggered.</p>
 <p>In that blueprint, two things happen:</p>
 <ol>
-<li>A linetrace from a point slightly above the character&rsquo;s location. When it succeeds, we get a hit result that will have an associated physical material (make sure to setup the <code>default</code> mapping as a fallback).</li>
+<li>A line trace from a point slightly above the character&rsquo;s location. When it succeeds, we get a hit result that will have an associated physical material (make sure to set up the <code>default</code> mapping as a fallback).</li>
 <li>Find the physical material in our data asset and play the sound associated with it.</li>
 </ol>
  <iframe src="https://blueprintue.com/render/_nc32jrx/" frameborder="0" scrolling="no" width="100%" height="500px" allowfullscreen></iframe>
-<p class="image-caption">This blueprint illustrates the linetrace and selection of an appropriate audio.</p>
+<p class="image-caption">This blueprint illustrates the line trace and selection of an appropriate audio.</p>
 <h3 class="heading" id="see-it-in-action-2">
   See it in action
   <a class="anchor" href="#see-it-in-action-2">#</a>
@@ -393,7 +393,7 @@
   Enemy AI
   <a class="anchor" href="#enemy-ai">#</a>
 </h2>
-<p>The enemy AI was not built using decisions tree, but by keeping track of the different states in c++. I became very quickly apparent how my approach would become problematic as I started adding more behavior variations to my enemies. On top of that, Stephen&rsquo;s class proposes to build these features within a reusable <code>Enemy</code> class which leads to a very large amount of code in the same pace. I have opted to create a custom <code>aiController</code> class that can be assigned to my enemies. If I want to create a completely different type of behavior, I simply need to implement a new <code>aiController</code>.</p>
+<p>The enemy AI was not built using decisions tree, but by keeping track of the different states in c++. I became very quickly apparent how my approach would become problematic as I started adding more behaviour variations to my enemies. On top of that, Stephen&rsquo;s class proposes to build these features within a reusable <code>Enemy</code> class which leads to a very large amount of code in the same pace. I have opted to create a custom <code>aiController</code> class that can be assigned to my enemies. If I want to create a completely different type of behaviour, I simply need to implement a new <code>aiController</code>.</p>
 <p>To react to the player&rsquo;s presence, I use the <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/ai-perception-in-unreal-engine">AIPerceptionComponent</a> with a configured sight sense. This allows my enemies to react to the player&rsquo;s presence whenever it enters their field of sight. Whenever that happens, and depending on the distance between an enemy and the player, different states will be reached and change the way it behaves.</p>
 <p>
 
@@ -433,7 +433,7 @@
 </span></span><span style="display:flex;"><span>		updateCombatTarget();
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>The setup for perceiving the player and move between states is as simple as implementing one function. Whenever our configured sight stimulus is active, we start chasing the seen player.</p>
+</span></span></code></pre></div><p>Setting up the perception of a player and moving between states is as simple as implementing one function. Whenever our configured sight stimulus is active, we start chasing the seen player.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#9aedfe">void</span> AEnemyAiController<span style="color:#ff6ac1">::</span>onPerceptionUpdated(AActor<span style="color:#ff6ac1">*</span> Actor, FAIStimulus Stimulus) {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> (isDead() <span style="color:#ff6ac1">||</span> isChasing() <span style="color:#ff6ac1">||</span> isEngaged()) <span style="color:#ff6ac1">return</span>;
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> (Stimulus.Type <span style="color:#ff6ac1">==</span> UAISense<span style="color:#ff6ac1">::</span>GetSenseID<span style="color:#ff6ac1">&lt;</span>UAISense_Sight<span style="color:#ff6ac1">&gt;</span>()) {
@@ -446,7 +446,7 @@
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>In order to better track the player during attacks, we slowly update orientation at a given speed during the animation. This prevents attacks from rooting the enemy into place and always missing when the player is currently moving.</p>
+</span></span></code></pre></div><p>In order to better track the player during attacks, we slowly update orientation at a given speed during the animation. This prevents attacks from making the enemy rooted in place and always missing when the player is currently moving.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#9aedfe">void</span> AEnemyAiController<span style="color:#ff6ac1">::</span>faceTarget(AActor<span style="color:#ff6ac1">*</span> target, <span style="color:#9aedfe">float</span> dt, <span style="color:#9aedfe">float</span> speed) {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">const</span> FRotator lookat <span style="color:#ff6ac1">=</span> UKismetMathLibrary<span style="color:#ff6ac1">::</span>FindLookAtRotation(
 </span></span><span style="display:flex;"><span>        enemy<span style="color:#ff6ac1">-&gt;</span>GetActorLocation(), 
@@ -463,7 +463,7 @@
 </span></span><span style="display:flex;"><span>		GetWorldTimerManager().SetTimer(patrolTimer, <span style="color:#ff6ac1">this</span>, <span style="color:#ff6ac1">&amp;</span>AEnemyAiController<span style="color:#ff6ac1">::</span>patrolTimerFinished, rng);
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>When alerted by the player&rsquo;s presence, an enemy will either chase or attack them depending on how far away they are from one another. During an attack animation, the enemy is considered <code>Enagaged</code> and cannot do any other actions such as moving or attacking. As soon as the player reaches a &ldquo;safe distance&rdquo; the enemy will revert back to it&rsquo;s patrol state and resume updating it&rsquo;s patrol targets.</p>
+</span></span></code></pre></div><p>When alerted by the player&rsquo;s presence, an enemy will either chase or attack them depending on how far away they are from one another. During an attack animation, the enemy is considered <code>Enagaged</code> and cannot do any other actions such as moving or attacking. As soon as the player reaches a &ldquo;safe distance&rdquo; the enemy will revert back to its patrol state and resume updating the patrol targets.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e2e4e5;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>AActor<span style="color:#ff6ac1">*</span> AEnemyAiController<span style="color:#ff6ac1">::</span>updateCombatTarget() {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff6ac1">if</span> (<span style="color:#ff6ac1">!</span>withinCombatRadius()) {
 </span></span><span style="display:flex;"><span>		startPatrolling();
