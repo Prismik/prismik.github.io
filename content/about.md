@@ -109,7 +109,7 @@ diﬀerentiation system.
 * Participate in the UX redesign of a web application to facilitate deployment of games in production.
 * Increase the test coverage rate of a deployment system.
 
-### iOS Developer intern
+### iOS Developer Intern
 | Nurun | *May 2015 - August 2015* |
 | :- | -: |
 |  **Relevant skills** | Swift, Ruby | 
@@ -121,7 +121,7 @@ diﬀerentiation system.
 * Develop a system for registering to the notifications of a smart home appliance.
 * Optimize the performance of a mobile application by reducing its memory usage.
 
-### Web Developer intern
+### Web Developer Intern
 | Seevibes | *January 2014 - September 2014* |
 | :- | -: |
 |  **Relevant skills** | JavaScript, Ruby, Html | 
